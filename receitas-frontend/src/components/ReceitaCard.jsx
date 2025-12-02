@@ -1,5 +1,5 @@
-// ReceitaCard.jsx
-// Meu card de receitas, com sombra leve e efeito bonito
+//  ReceitaCard.jsx
+//  Meu card de receitas, com sombra leve e efeito bonito
 
 export default function ReceitaCard({ nome, imagem, descricao }) {
   return (
