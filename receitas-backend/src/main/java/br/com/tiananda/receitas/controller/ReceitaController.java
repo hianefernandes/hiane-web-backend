@@ -2,6 +2,7 @@ package com.tiaNanda.receitas.controller;
 
 import com.tiaNanda.receitas.dto.ReceitaRequestDTO;
 import com.tiaNanda.receitas.dto.ReceitaResponseDTO;
+import com.tiaNanda.receitas.service.ApiExternaService;
 import com.tiaNanda.receitas.service.ReceitaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,15 +18,17 @@ import java.util.List;
 public class ReceitaController {
 
     private final ReceitaService service;
+    private final ApiExternaService apiExternaService;
 
     @Value("${app.frontend.url:http://localhost:5173}")
     private String frontendUrl;
 
-    public ReceitaController(ReceitaService service) {
+    public ReceitaController(ReceitaService service, ApiExternaService apiExternaService) {
         this.service = service;
+        this.apiExternaService = apiExternaService;
     }
 
-    // Lista paginada: /api/receitas?page=0&size=10&sortBy=nome
+    // LISTA PAGINADA (já atende o professor)
     @GetMapping
     public ResponseEntity<Page<ReceitaResponseDTO>> listar(
             @RequestParam(defaultValue = "0") int page,
@@ -35,7 +38,7 @@ public class ReceitaController {
         return ResponseEntity.ok(result);
     }
 
-    // Lista todas sem paginação
+    // LISTA TODAS SEM PAGINAÇÃO
     @GetMapping("/all")
     public ResponseEntity<List<ReceitaResponseDTO>> listarTodas() {
         return ResponseEntity.ok(service.listarTodas());
@@ -63,5 +66,12 @@ public class ReceitaController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // ENDPOINT PRA CONSUMIR API EXTERNA
+    @GetMapping("/piada")
+    public ResponseEntity<String> getPiada() {
+        String resposta = apiExternaService.buscarPiada();
+        return ResponseEntity.ok(resposta);
     }
 }
